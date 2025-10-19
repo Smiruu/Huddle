@@ -2,15 +2,12 @@ import React from 'react';
 
 const Header = () => {
   return (
-    // The main header element, styled to be sticky and semi-transparent
     <header className="backdrop-blur-sm sticky top-0 z-50 border-b border-gray-200">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           
-          {/* Left Side: Logo and App Name */}
           <div className="flex items-center space-x-4">
             <div className="flex-shrink-0">
-              {/* Logo SVG */}
               <svg className="h-8 w-8 text-huddle-orange" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
                  <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" />
               </svg>
@@ -28,7 +25,6 @@ const Header = () => {
               <span>Post a Huddle</span>
             </button>
             
-            {/* Profile Dropdown Placeholder */}
             <div className="flex items-center space-x-2 p-2 rounded-lg hover:bg-huddle-dark-2 cursor-pointer">
               <img className="h-8 w-8 rounded-full object-cover" src="https://placehold.co/100x100/111827/FF7A59?text=G" alt="User Profile" />
               <span className="hidden md:block font-semibold text-gray-800">Gamer123</span>
