@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+@theme {
+  --color-huddle-orange: #FF7A59;
+  --color-huddle-blue: #005C99;
+  --color-huddle-text-dark: #E5E7EB;
+  --color-huddle-text-light: #1F2937;
+  --color-huddle-light: #F9FAFB;
+  --color-huddle-dark: #111827;
+}
+:root {
+  font-family: Inter, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #F9FAFB;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
