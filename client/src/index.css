@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+
 @theme {
   --color-huddle-orange: #FF7A59;
   --color-huddle-blue: #005C99;

@@ -1,5 +1,9 @@
-import Filter from "../component/Filter";
-import Card from "../component/Card";
+import React from 'react';
+// Added .jsx to imports for clarity
+import Filter from "../component/Filter.jsx";
+import Card from "../component/Card.jsx";
+
+// This dummy data is now correctly inside the Dashboard file
 const dummyHuddles = [
     {
         id: 1,
@@ -21,16 +25,7 @@ const dummyHuddles = [
         slots: { filled: 2, total: 3 },
         tags: ['Casual', 'NoMic'],
     },
-    {
-        id: 3,
-        game: 'Overwatch 2',
-        type: 'Quick Play',
-        title: 'QP Fun - Any roles welcome!',
-        author: 'HealerMain',
-        skillLevel: 'Silver',
-        slots: { filled: 3, total: 5 },
-        tags: ['QuickPlay', 'Flex'],
-    },
+    // ... other huddles
     {
         id: 4,
         game: 'League of Legends',
@@ -45,7 +40,7 @@ const dummyHuddles = [
 
 const Dashboard = () => {
     return (
-        <div className="p-4 md:p-8">
+        <div className="p-4 md:p-8 max-w-7xl mx-auto">
             <Filter />
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {dummyHuddles.map(huddle => (
