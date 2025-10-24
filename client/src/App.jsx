@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Header from "./component/Header"
 import Dashboard from "./screen/Dashboard";
+import Login from "./screen/Login";
 
 const App = () => {
   const getInitialTheme = () => {
@@ -44,6 +45,7 @@ const App = () => {
         <Router>
           <Routes>
             <Route path="/" element={<Dashboard />} />
+            <Route path="/login" element={<Login />} />
           </Routes>
         </Router>
       </div>
