@@ -42,12 +42,14 @@ const App = () => {
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
       <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
         <Header />
-        <Router>
+        <main className="flex-grow">
+          <Router>
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/login" element={<Login />} />
           </Routes>
         </Router>
+        </main>
       </div>
     </ThemeContext.Provider>
   );
