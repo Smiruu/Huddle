@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    // File Layout
+    "rootDir": "./src",
+    "outDir": "./dist",
+
+    // Environment Settings
+    "module": "commonjs",
+    "target": "es2020",
+    "types": [],
+
+    "esModuleInterop": true,          // Allows for cleaner 'import' syntax
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,                   // Enables all strict type-checking
+    "skipLibCheck": true            // Skips type checking of declaration files
+  },
+  "include": ["src/**/*"]
+}
