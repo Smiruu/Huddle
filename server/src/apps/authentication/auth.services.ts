@@ -1,5 +1,10 @@
 import supabase from "../../supabase/supabase";
-import { AuthError, User } from "@supabase/supabase-js";
+import { AuthError, Session, User } from "@supabase/supabase-js";
+
+interface LoginResult {
+    session: Session;
+    user: User
+}
 
 interface RegisterResult {
     user: User;
@@ -52,7 +57,27 @@ export const AuthService = {
         }
 
         console.log("auth.services: User registered successfully:", newUser.id);
-        return {user: newUser};
-        
+        return {user: newUser};   
+    },
+
+    // Login Function
+    async login(email: string, password: string): Promise<LoginResult> {
+        console.log("auth.services: Attempting login for email:", email);
+
+        const { data, error} = await supabase.auth.signInWithPassword({
+            email,
+            password,
+        });
+
+        if(error) {
+            console.error("auth.services: Supabase login error:", error.message);
+            throw error;
+        }
+
+        if (!data.session || !data.user) {
+            console.error("auth.services: No session or user data returned after login");
+        }
+        console.log(`auth.services: User logged in successfully: ${email}`);
+        return { session: data.session, user: data.user };
     }
 }

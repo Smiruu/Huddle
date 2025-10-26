@@ -38,4 +38,40 @@ export const AuthController = {
       next(err);
     }
   },
+
+  async login(req: Request, res: Response, next: NextFunction): Promise<void> {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      res.status(400).json({ message: "Email and password are required"});
+      return;
+    }
+
+    try {
+      const {session, user} = await AuthService.login(email, password);
+      if(session?.refresh_token) {
+        res.cookie('refresh_token', session.refresh_token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+          maxAge: 1000 * 60 * 60 * 24 * 30,
+        })
+      }
+
+      res.status(200).json({
+        message: "Login successful",
+        access_token: session?.access_token,
+        user: user,
+      })
+    } catch (err) {
+      if (err instanceof AuthError) {
+        if (err.message.includes("Invalid login credentials")) {
+          res.status(401).json({ message: "Invalid email or password" });
+          return;
+        }
+      }
+      next(err);
+    }
+  }
+  
 };
