@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-  "build": "npx tsc",
-  "start": "node dist/server.ts",
-  "dev": "nodemon --exec ts-node src/server.ts"
-}, 
+    "build": "npx tsc",
+    "start": "node dist/server.ts",
+    "dev": "nodemon --exec ts-node src/server.ts"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -16,12 +16,14 @@
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "morgan": "^1.10.1"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.4",
+    "@types/morgan": "^1.9.10",
     "@types/node": "^24.9.1",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",

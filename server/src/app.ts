@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import errorHandler from './middleware/errorHandler';
+import morgan from 'morgan';
 
 import authRoutes from './apps/authentication/auth.routes';
 
@@ -12,10 +13,9 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(cors({
-    origin: process.env.CLIENT_URL,
-}));
+app.use(cors());
 app.use(cookieParser());
+app.use(morgan('dev'))
 
 //--ROUTES--
 app.get('/', (req: Request, res: Response) => {
