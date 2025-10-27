@@ -21,7 +21,7 @@ const getInitialTheme = () => {
         if (storedPref) {
             theme = storedPref;
         } else {
-            const userMedia = windo.matchMedia('(prefers-color-scheme: dark)');
+            const userMedia = window.matchMedia('(prefers-color-scheme: dark)');
             if (userMedia.matches) {
                 theme = 'dark';
             }

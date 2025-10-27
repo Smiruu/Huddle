@@ -9,9 +9,10 @@ const Login = () => {
             border-gray-200 dark:border-gray-700 mb-8 text-huddle-text-light dark:text-huddle-text-dark
             flex flex-col lg:flex-row gap-8 max-w-4xl">
                 {/* Form design ehe*/}
-                <div className="w-1/2">
+                <div className="w-1/2 align-center">
                     <h1 className="text-2xl font-semibold mb-3">Welcome Back!</h1>
                     <LoginForm />   
+                    
                 </div>
                 {/* Image Section */}
                 <div className="w-1/2 justify-center items-center">
