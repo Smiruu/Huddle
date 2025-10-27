@@ -7,6 +7,7 @@ import Header from "./component/Header"
 import Dashboard from "./screen/Dashboard";
 import Login from "./screen/Login";
 import { useAuthStore } from "./store/authStore";
+import Register from "./screen/Register";
 
 const App = () => {
 
@@ -39,6 +40,7 @@ const App = () => {
           <Routes>
             <Route element = {<PublicRoute/>}>
               <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />}/>
             </Route>
 
             <Route element = {<ProtectedRoute/>}>

@@ -2,6 +2,7 @@ import axios from "axios";
 import { REGISTER, REFRESH, LOGIN} from "../constants/authPaths";
 
 export const registerUser = async (email, password, username) =>{
+    
     const response = await axios.post(REGISTER,
         {email, password, username}
     );

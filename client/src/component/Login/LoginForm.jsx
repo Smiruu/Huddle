@@ -11,7 +11,7 @@ const LoginForm = () => {
     const loginUser = useAuthStore((state) => state.loginUser);
     const authLoading = useAuthStore((state) => state.authLoading);
     const authError = useAuthStore((state) => state.authError);
-    const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -24,7 +24,7 @@ const LoginForm = () => {
         <form className="flex flex-col space-y-5" onSubmit={handleSubmit}>
             <input
                 type="text"
-                placeholder="Email or Username"
+                placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className=" bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 rounded-lg p-2 focus:ring-huddle-blue focus:border-huddle-blue dark:focus:ring-huddle-orange dark:focus:border-huddle-orange"

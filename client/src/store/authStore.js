@@ -28,6 +28,18 @@ export const useAuthStore = create((set) => ({
         }
     },
 
+    registerUser: async (email, password, username) => {
+        set({authLoading: true});
+        try{
+            await registerUser(email, password, username);
+            set({authLoading: false});
+            return true;
+        } catch (error){
+            console.error("Login Error:", error.message);
+            set({authError: error.message, authLoading: false});
+        }
+    },
+
     loginUser: async (email, password) => {
         set({authLoading: true});
         try {

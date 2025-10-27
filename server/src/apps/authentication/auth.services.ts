@@ -26,6 +26,7 @@ export const AuthService = {
             .maybeSingle();
 
         if(existingUser) {
+            
             throw new Error('Username already taken');
         }
 

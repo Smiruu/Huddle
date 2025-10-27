@@ -22,7 +22,7 @@ export const AuthController = {
       const { user } = await AuthService.register(email, password, username);
       res.status(201).json({
         message: "User registered successfully, Please proceed to login.",
-        userId: user?.id,
+        userEmail: user?.email,
       });
     } catch (err) {
       if (err instanceof AuthError) {
