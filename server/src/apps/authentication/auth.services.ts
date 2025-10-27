@@ -1,5 +1,5 @@
 import supabase from "../../supabase/supabase";
-import { AuthError, Session, User } from "@supabase/supabase-js";
+import { Session, User } from "@supabase/supabase-js";
 
 interface LoginResult {
     session: Session;
@@ -10,6 +10,10 @@ interface RegisterResult {
     user: User;
 }
 
+interface RefreshResult {
+    session: Session | null;
+    user: User | null;
+}
 export const AuthService = {
     // Register Function
     async register(email: string, password: string, username: string): Promise<RegisterResult> {
@@ -79,5 +83,22 @@ export const AuthService = {
         }
         console.log(`auth.services: User logged in successfully: ${email}`);
         return { session: data.session, user: data.user };
-    }
+    },
+
+    async refresh( refresh_token: string): Promise<RefreshResult> {
+
+        console.log("auth.services: Attempting token refresh");
+
+        const {data, error} = await supabase.auth.refreshSession({
+            refresh_token: refresh_token,
+        })
+
+        if(error) {
+            console.error("auth.services: Supabase token refresh error:", error.message);
+            throw error;
+        }
+
+        console.log("auth.services: Token refreshed successfully");
+        return { session: data.session, user: data.user };
+    },
 }

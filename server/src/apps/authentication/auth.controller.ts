@@ -72,6 +72,35 @@ export const AuthController = {
       }
       next(err);
     }
-  }
+  },
+  async refresh(req: Request, res: Response, next: NextFunction): Promise<void> {
+    const refresh_token = req.cookies['refresh_token'];
+
+    if(!refresh_token){
+      res.status(400).json({message: "No refresh token provided"});
+      return;
+    }
+
+    try {
+      
+       const {session, user} = await AuthService.refresh(refresh_token);
+
+       res.cookie('refresh_token', session?.refresh_token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+          maxAge: 1000 * 60 * 60 * 24 * 30,
+        })
+
+        res.status(200).json({
+          message: "Token refreshed successfully",
+          access_token: session?.access_token,
+          user: user,
+        })
+    } catch (err) { 
+        res.status(401).json({message: "Invalid refresh token"});
+        next(err);
+    }
+  },
   
 };
