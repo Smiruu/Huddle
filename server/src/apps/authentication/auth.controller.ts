@@ -48,7 +48,7 @@ export const AuthController = {
     }
 
     try {
-      const {session, user} = await AuthService.login(email, password);
+      const {session, user, profile} = await AuthService.login(email, password);
       if(session?.refresh_token) {
         res.cookie('refresh_token', session.refresh_token, {
           httpOnly: true,
@@ -62,6 +62,7 @@ export const AuthController = {
         message: "Login successful",
         access_token: session?.access_token,
         user: user,
+        profile: profile,
       })
     } catch (err) {
       if (err instanceof AuthError) {
@@ -73,6 +74,13 @@ export const AuthController = {
       next(err);
     }
   },
+  async logout(req:Request,res: Response, next:NextFunction): Promise<void> {
+    res.clearCookie('refresh_token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+    })
+    res.status(200).json({message: "Logged out successfully"});
+  },
   async refresh(req: Request, res: Response, next: NextFunction): Promise<void> {
     const refresh_token = req.cookies['refresh_token'];
 
@@ -83,7 +91,7 @@ export const AuthController = {
 
     try {
       
-       const {session, user} = await AuthService.refresh(refresh_token);
+       const {session, user, profile} = await AuthService.refresh(refresh_token);
 
        res.cookie('refresh_token', session?.refresh_token, {
           httpOnly: true,
@@ -96,6 +104,7 @@ export const AuthController = {
           message: "Token refreshed successfully",
           access_token: session?.access_token,
           user: user,
+          profile: profile,
         })
     } catch (err) { 
         res.status(401).json({message: "Invalid refresh token"});
@@ -103,4 +112,5 @@ export const AuthController = {
     }
   },
   
+
 };

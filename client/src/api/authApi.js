@@ -1,5 +1,5 @@
 import axios from "axios";
-import { REGISTER, REFRESH, LOGIN} from "../constants/authPaths";
+import { REGISTER, REFRESH, LOGIN, LOGOUT} from "../constants/authPaths";
 
 export const registerUser = async (email, password, username) =>{
     
@@ -24,4 +24,12 @@ export const refreshToken = async() => {
     })
 
     return response.data;
+}
+
+export const logoutUser = async() => {
+    await axios.post(LOGOUT, {}, {
+        withCredentials: true,
+    });
+
+    return true;
 }

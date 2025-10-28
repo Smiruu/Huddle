@@ -3,7 +3,8 @@ import { Session, User } from "@supabase/supabase-js";
 
 interface LoginResult {
     session: Session;
-    user: User
+    user: User,
+    profile: any;
 }
 
 interface RegisterResult {
@@ -13,6 +14,7 @@ interface RegisterResult {
 interface RefreshResult {
     session: Session | null;
     user: User | null;
+    profile: any;
 }
 export const AuthService = {
     // Register Function
@@ -26,7 +28,7 @@ export const AuthService = {
             .maybeSingle();
 
         if(existingUser) {
-            
+
             throw new Error('Username already taken');
         }
 
@@ -69,28 +71,39 @@ export const AuthService = {
     async login(email: string, password: string): Promise<LoginResult> {
         console.log("auth.services: Attempting login for email:", email);
 
-        const { data, error} = await supabase.auth.signInWithPassword({
+        const { data: authData, error:authError} = await supabase.auth.signInWithPassword({
             email,
             password,
         });
 
-        if(error) {
-            console.error("auth.services: Supabase login error:", error.message);
-            throw error;
+        if(authError) {
+            console.error("auth.services: Supabase login error:", authError.message);
+            throw authError;
         }
 
-        if (!data.session || !data.user) {
+        const { data: profileData, error: profileError } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', authData.user?.id)
+            .maybeSingle();
+        
+        if(profileError) {
+            console.error("auth.services: Supabase profile fetch error:", profileError.message);
+            throw profileError;
+        }
+
+        if (!authData.session || !authData.user) {
             console.error("auth.services: No session or user data returned after login");
         }
         console.log(`auth.services: User logged in successfully: ${email}`);
-        return { session: data.session, user: data.user };
+        return { session: authData.session, user: authData.user, profile: profileData };
     },
 
     async refresh( refresh_token: string): Promise<RefreshResult> {
 
         console.log("auth.services: Attempting token refresh");
 
-        const {data, error} = await supabase.auth.refreshSession({
+        const {data:refreshData, error} = await supabase.auth.refreshSession({
             refresh_token: refresh_token,
         })
 
@@ -98,8 +111,14 @@ export const AuthService = {
             console.error("auth.services: Supabase token refresh error:", error.message);
             throw error;
         }
-
+        console.log(refreshData.user?.id)
+         const { data: profileData, } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', refreshData.user?.id)
+            .single();
+        
         console.log("auth.services: Token refreshed successfully");
-        return { session: data.session, user: data.user };
+        return { session: refreshData.session, user: refreshData.user, profile: profileData  };
     },
 }

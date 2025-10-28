@@ -1,9 +1,10 @@
 import {create} from "zustand";
-import { registerUser, loginUser, refreshToken } from "../api/authApi";
+import { registerUser, loginUser, refreshToken, logoutUser } from "../api/authApi";
 
 export const useAuthStore = create((set) => ({
     //INITIAL STATES
     user: null,
+    profile: null,
     isAuthenticated: false,
     token: null,
     authLoading: false,
@@ -19,6 +20,7 @@ export const useAuthStore = create((set) => ({
             set({
                 user: data.user,
                 token: data.access_token,
+                profile: data.profile,
                 isAuthenticated: true,
                 isCheckingSession: false,
             }) 
@@ -48,6 +50,7 @@ export const useAuthStore = create((set) => ({
             set({
                 user: data.user,
                 token: data.access_token,
+                profile: data.profile,
                 isAuthenticated: true,
                 authLoading: false,
 
@@ -58,7 +61,13 @@ export const useAuthStore = create((set) => ({
         }
     },
 
-    logoutUser: () => {
+    logoutUser: async () => {
+        try {
+            await logoutUser();
+        } catch (error) {
+             console.error("Logout API call failed:", error.message);
+        }
+        
         set({
             user: null,
             token: null,
