@@ -3,17 +3,17 @@ import { Sun, Moon, Menu, X, LogOut, Plus, User } from "lucide-react";
 import { useThemeStore } from "../store/themeStore";
 import { useAuthStore } from "../store/authStore";
 import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
-import { shallow } from "zustand/shallow"; // Import shallow
+// 1. Import the new CreateHuddle component from the path you specified
+import CreateHuddle from "./Header/CreateHuddle";
 
 const Header = () => {
   const { theme, toggleTheme } = useThemeStore();
   const navigate = useNavigate(); // Hook for navigation
 
   // 1. Get auth state and actions using efficient selectors
-  const { profile, isAuthenticated} = useAuthStore(
-  );
+  const { profile, isAuthenticated } = useAuthStore();
 
-  console.log(profile.username)
+  console.log(profile.username);
   const logoutUser = useAuthStore((state) => state.logoutUser);
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -71,10 +71,8 @@ const Header = () => {
             {/* 3. Conditionally render buttons based on auth state */}
             {isAuthenticated ? (
               <>
-                <button className="bg-huddle-orange text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:bg-huddle-blue transition-all duration-200 flex items-center space-x-2 cursor-pointer ">
-                  <Plus size={20} />
-                  <span>Post a Huddle</span>
-                </button>
+                {/* 2. Use the new component for the desktop button */}
+                <CreateHuddle />
 
                 {/* Profile Dropdown */}
                 <div className="relative">
@@ -166,10 +164,8 @@ const Header = () => {
               {/* 4. Conditional Mobile Menu */}
               {isAuthenticated ? (
                 <>
-                  <button className="w-full bg-huddle-orange text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:bg-huddle-blue transition-all duration-200 flex items-center justify-center space-x-2 cursor-pointer ">
-                    <Plus size={20} />
-                    <span>Post a Huddle</span>
-                  </button>
+                  {/* 3. Use the new component for the mobile button */}
+                  <CreateHuddle isMobile />
 
                   <Link
                     to="/profile"
@@ -188,7 +184,10 @@ const Header = () => {
                         {profile?.username}
                       </span>
                     </div>
-                    <User size={20} className="text-gray-500 dark:text-gray-400" />
+                    <User
+                      size={20}
+                      className="text-gray-500 dark:text-gray-400"
+                    />
                   </Link>
                   <button
                     onClick={handleSignOut}
@@ -218,3 +217,4 @@ const Header = () => {
 };
 
 export default Header;
+
