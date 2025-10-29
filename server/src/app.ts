@@ -6,6 +6,7 @@ import errorHandler from './middleware/errorHandler';
 import morgan from 'morgan';
 
 import authRoutes from './apps/authentication/auth.routes';
+import lobbyRoutes from './apps/lobby/lobby.routes'
 
 //allow environment variables
 dotenv.config();
@@ -25,6 +26,7 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Server is alive!');
 });
 app.use("/api/auth", authRoutes);
+app.use("/api/lobby", lobbyRoutes);
 
 // Error Handling Middleware
 app.use(errorHandler);

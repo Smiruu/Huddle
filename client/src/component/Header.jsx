@@ -10,7 +10,7 @@ const Header = () => {
   const navigate = useNavigate(); // Hook for navigation
 
   // 1. Get auth state and actions using efficient selectors
-  const { profile, user, isAuthenticated} = useAuthStore(
+  const { profile, isAuthenticated} = useAuthStore(
   );
 
   console.log(profile.username)
