@@ -1,5 +1,5 @@
 import {io} from "socket.io-client"
-import useAuthStore from "./store/authStore"
+import {useAuthStore} from "../store/authStore"
 
 const URL = import.meta.env.VITE_SOCKET_URL;
 

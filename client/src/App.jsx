@@ -9,11 +9,15 @@ import Login from "./screen/Login";
 import { useAuthStore } from "./store/authStore";
 import Register from "./screen/Register";
 
+import { connectSocket, socket } from "./socket/socket";
+import Lobby from "./screen/Lobby";
+
 const App = () => {
 
   
   const checkAuth = useAuthStore((state) => state.checkAuth);
   const isCheckingSession = useAuthStore((state) => state.isCheckingSession);
+  const token = useAuthStore((state) => state.token)
 
   useEffect(() => {
     if (checkAuth) {
@@ -21,6 +25,13 @@ const App = () => {
     }
   }, [checkAuth])
 
+  useEffect(() => {
+    if(token){
+      connectSocket();
+    } else{
+      socket.disconnect()
+    }
+  }, [token])
 
   if (isCheckingSession) {
     return (
@@ -45,6 +56,7 @@ const App = () => {
 
             <Route element = {<ProtectedRoute/>}>
              <Route path="/" element={<Dashboard />} />
+             <Route path="/lobby/:id" element={<Lobby />} />
             </Route>
 
             

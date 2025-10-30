@@ -1,17 +1,43 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { socket } from '../socket/socket.js';
 
-const Card = ({ game, type, title, author, skillLevel, slots, tags }) => {
+const Card = ({ id,game, title, author, skillLevel, max, count, tags }) => {
     const authorInitial = author.charAt(0).toUpperCase();
+    const navigate = useNavigate()
 
+
+    //Listen if its okay to join
+    useEffect(()=> {
+        const onJoinedSuccess = (data) => {
+            if(data.lobbyId === id){
+                console.log('Server confirmed join for lobby:', data.lobbyId)
+                navigate(`/lobby/${data.lobbyId}`)
+            }
+        };
+        socket.on('joined_lobby_success', onJoinedSuccess);
+
+        return () => {
+            socket.off('joined_lobby_success', onJoinedSuccess)
+        }
+
+    },[id, navigate])
+
+    const handleJoin = (e)=>{
+        e.stopPropagation();
+
+        console.log(`Telling server we want to join lobby: ${id}`);
+        socket.emit('join_lobby', { lobbyId: id });
+    }
     return (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl border border-gray-200 dark:border-gray-700 text-huddle-text-light dark:text-huddle-text-dark flex flex-col h-full transition-all duration-300 hover:-translate-y-2 cursor-pointer">
             <div className="p-4 pb-2 flex justify-between items-start border-b border-gray-100 dark:border-gray-700">
                 <div>
-                    <span className="text-huddle-orange font-semibold text-sm">{game}{type && ` - ${type}`}</span>
+                    <span className="text-huddle-orange font-semibold text-sm">{game}</span>
                 </div>
                 <div className="text-right">
                     <span className="text-xs text-gray-500 dark:text-gray-400 block">Slots</span>
-                    <span className="text-xl font-bold text-gray-800 dark:text-gray-200">{slots.filled}/{slots.total}</span>
+                    <span className="text-xl font-bold text-gray-800 dark:text-gray-200">{count}/{max}</span>
                 </div>
             </div>
             <div className="p-4 flex-grow">
@@ -28,13 +54,15 @@ const Card = ({ game, type, title, author, skillLevel, slots, tags }) => {
             </div>
             <div className="p-4 pt-0 flex justify-between items-center">
                 <div className="flex flex-wrap gap-2">
-                    {tags.map(tag => (
+                    {tags?.map(tag => (
                         <span key={tag} className="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-semibold px-2.5 py-1 rounded-full">
                             #{tag}
                         </span>
                     ))}
                 </div>
-                <button className="bg-huddle-orange text-white font-bold py-2 px-6 rounded-lg shadow hover:bg-huddle-blue transition-colors duration-200">
+                <button 
+                onClick={handleJoin}
+                className="bg-huddle-orange text-white font-bold py-2 px-6 rounded-lg shadow hover:bg-huddle-blue transition-colors duration-200">
                     Join
                 </button>
             </div>

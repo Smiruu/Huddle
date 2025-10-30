@@ -1,10 +1,10 @@
 import apiClient from "./apiClient";
 import { CREATELOBBY, GETLOBBIES } from "../constants/lobbyPaths";
 
-export const createHuddle = async (name, description, userId, game, skillLevel) => {
+export const createHuddle = async (name, description, userId, game, skillLevel, maxParticipants, tags) => {
     
     const response = await apiClient.post(CREATELOBBY, {
-        name, description, userId, game, skillLevel
+        name, description, userId, game, skillLevel,  maxParticipants, tags
     })
 
     return response;

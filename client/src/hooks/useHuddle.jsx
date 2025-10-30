@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
-import { createHuddle as createHuddleApi } from "../api/lobbyApi";
+import { createHuddle as createHuddleApi, getLobbies } from "../api/lobbyApi";
 
 export const useHuddle = () => {
     const [huddleLoading, setHuddleLoading] = useState(false)
     const [huddleError, setHuddleError] = useState(null);
+    const [huddle, setHuddle] = useState([])
 
     const navigate = useNavigate();
     const token =  useAuthStore((state) => state.token);
@@ -20,7 +21,7 @@ export const useHuddle = () => {
    * @param {string} [huddleDetails.description] - Optional description.
    * @param {function} onSuccess - Optional callback to run on success (e.g., close modal).
    */
-    const createHuddle = async ({name, description, game, skillLevel }, onSuccess = () => {}) => {
+    const createHuddle = async ({name, description, game, skillLevel, maxParticipants, tags }, onSuccess = () => {}) => {
         
         
         if(!token || !userId) {
@@ -30,7 +31,7 @@ export const useHuddle = () => {
 
         setHuddleLoading(true)
         try {
-            const response = await createHuddleApi(name, description, userId, game, skillLevel);
+            const response = await createHuddleApi(name, description, userId, game, skillLevel, maxParticipants, tags);
 
             const newHuddle = response.data;
             
@@ -46,8 +47,22 @@ export const useHuddle = () => {
         }
     }
 
+
+    const getHuddles = async () => {
+        setHuddleLoading(true)
+        try {
+            const response = await getLobbies();
+            const lobbies = response.data.lobbies
+            setHuddle(lobbies);
+        } catch (err) {
+            console.error(err);
+            setHuddleError("Failed to fetch lobbies")
+        } finally {
+            setHuddleLoading(false)
+        }
+    }
     const clearHuddleError = () => setHuddleError(null);
 
-    return { huddleLoading, huddleError, createHuddle, clearHuddleError };
+    return { huddleLoading, huddleError, huddle, getHuddles, createHuddle, clearHuddleError };
 
 }

@@ -9,6 +9,6 @@ const PORT = process.env.PORT ;
 const httpServer = createServer(app);
 const io = initializeSocket(httpServer);
 
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
     console.log(`Server running on  http://localhost:${PORT}`)
 })

@@ -8,20 +8,22 @@ const CreateHuddle = ({ isMobile = false }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [huddleName, setHuddleName] = useState('');
   const [description, setDescription] = useState('');
-  // 2. Changed state to 'game'
-  const [game, setGame] = useState('Valorant'); // Default value
-  const [skillLevel, setSkillLevel] = useState('Any'); // Default value
+  const [game, setGame] = useState('Valorant'); 
+  const [skillLevel, setSkillLevel] = useState('Any');
+  const [maxParticipants, setMaxParticipants] = useState(10); // <-- ADDED: Default to 10
+  const [tagsInput, setTagsInput] = useState('');             // <-- ADDED: State for the tag input string
 
-  // 3. Use the hook to get all logic and state
+  // --- Hook ---
   const { huddleLoading, huddleError, createHuddle, clearHuddleError } = useHuddle();
 
   // --- UI Functions ---
   const openModal = () => {
     setHuddleName(''); 
     setDescription('');
-
     setGame('Valorant');
     setSkillLevel('Any');
+    setMaxParticipants(10);    // <-- ADDED: Reset on open
+    setTagsInput('');          // <-- ADDED: Reset on open
     clearHuddleError();
     setIsModalOpen(true);
   };
@@ -34,16 +36,29 @@ const CreateHuddle = ({ isMobile = false }) => {
     e.preventDefault();
     if (!huddleName) return;
 
-    // 5. Call the hook's create function with 'game'
+    // Process the tags string into an array
+    const tags = tagsInput
+      .split(',')                     // Split by comma
+      .map(tag => tag.trim())         // Trim whitespace
+      .filter(tag => tag.length > 0); // Remove any empty strings
+
+    // Call the hook's create function with all fields
     await createHuddle(
-      { name: huddleName, description, game, skillLevel },
+      { 
+        name: huddleName, 
+        description, 
+        game, 
+        skillLevel,
+        maxParticipants, // <-- ADDED
+        tags             // <-- ADDED
+      },
       () => {
         closeModal();
       }
     );
   };
   
-  // Dynamic class for desktop vs. mobile button
+  // --- Styles (no changes) ---
   const buttonClass = isMobile
     ? "w-full bg-huddle-orange text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:bg-huddle-blue transition-all duration-200 flex items-center justify-center space-x-2 cursor-pointer"
     : "bg-huddle-orange text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:bg-huddle-blue transition-all duration-200 flex items-center space-x-2 cursor-pointer";
@@ -67,6 +82,7 @@ const CreateHuddle = ({ isMobile = false }) => {
             className="bg-huddle-light dark:bg-huddle-dark w-full max-w-md rounded-lg shadow-xl p-6 mx-4 relative"
             onClick={(e) => e.stopPropagation()} 
           >
+            {/* --- Header (no change) --- */}
             <div className="flex justify-between items-center pb-4 border-b border-gray-200 dark:border-gray-700">
               <h3 className="text-xl font-semibold text-huddle-text-light dark:text-huddle-text-dark">
                 Create a Huddle
@@ -80,6 +96,7 @@ const CreateHuddle = ({ isMobile = false }) => {
             </div>
 
             <form onSubmit={handleSubmit} className="mt-4 space-y-4">
+              {/* --- Huddle Name (no change) --- */}
               <div>
                 <label htmlFor="huddleName" className={labelStyles}>
                   Huddle Name
@@ -95,6 +112,7 @@ const CreateHuddle = ({ isMobile = false }) => {
                 />
               </div>
 
+              {/* --- Description (no change) --- */}
               <div>
                 <label htmlFor="description" className={labelStyles}>
                   Description (Optional)
@@ -109,8 +127,8 @@ const CreateHuddle = ({ isMobile = false }) => {
                 />
               </div>
 
+              {/* --- Game & Skill Grid (no change) --- */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* 6. Changed to 'game' */}
                 <div>
                   <label htmlFor="game" className={labelStyles}>
                     Game
@@ -146,6 +164,40 @@ const CreateHuddle = ({ isMobile = false }) => {
                 </div>
               </div>
 
+              {/* --- NEW GRID for Max Participants & Tags --- */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="maxParticipants" className={labelStyles}>
+                    Max Participants
+                  </label>
+                  <input
+                    type="number"
+                    id="maxParticipants"
+                    value={maxParticipants}
+                    // Cast to number
+                    onChange={(e) => setMaxParticipants(Number(e.target.value))}
+                    className={inputStyles}
+                    min="2"
+                    max="100" // Set a reasonable max
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="tags" className={labelStyles}>
+                    Tags (comma-separated)
+                  </label>
+                  <input
+                    type="text"
+                    id="tags"
+                    value={tagsInput}
+                    onChange={(e) => setTagsInput(e.target.value)}
+                    className={inputStyles}
+                    placeholder="e.g. casual, ranked, mic-required"
+                  />
+                </div>
+              </div>
+
+              {/* --- Error & Submit Button (no change) --- */}
               {huddleError && (
                 <p className="text-sm text-red-600 dark:text-red-500">
                   {huddleError}
@@ -174,4 +226,3 @@ const CreateHuddle = ({ isMobile = false }) => {
 };
 
 export default CreateHuddle;
-

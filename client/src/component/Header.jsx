@@ -3,17 +3,19 @@ import { Sun, Moon, Menu, X, LogOut, Plus, User } from "lucide-react";
 import { useThemeStore } from "../store/themeStore";
 import { useAuthStore } from "../store/authStore";
 import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
-// 1. Import the new CreateHuddle component from the path you specified
 import CreateHuddle from "./Header/CreateHuddle";
 
 const Header = () => {
   const { theme, toggleTheme } = useThemeStore();
   const navigate = useNavigate(); // Hook for navigation
 
-  // 1. Get auth state and actions using efficient selectors
   const { profile, isAuthenticated } = useAuthStore();
 
-  console.log(profile.username);
+  // --- FIX ---
+  // Use optional chaining. This logs 'undefined' if profile is null,
+  // which is safe and won't crash the component.
+  console.log(profile?.username);
+
   const logoutUser = useAuthStore((state) => state.logoutUser);
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -59,7 +61,6 @@ const Header = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-4">
-            {/* 2. Show theme toggle for everyone */}
             <button
               onClick={toggleTheme}
               className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-huddle-orange"
@@ -68,10 +69,9 @@ const Header = () => {
               {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
             </button>
 
-            {/* 3. Conditionally render buttons based on auth state */}
+            {/* This logic is correct. It already hides CreateHuddle if !isAuthenticated */}
             {isAuthenticated ? (
               <>
-                {/* 2. Use the new component for the desktop button */}
                 <CreateHuddle />
 
                 {/* Profile Dropdown */}
@@ -83,11 +83,13 @@ const Header = () => {
                     <img
                       className="h-8 w-8 rounded-full object-cover"
                       src={`https://placehold.co/100x100/111827/FF7A59?text=${
-                        profile?.username?.charAt(0)
+                        // --- FIX --- Use optional chaining
+                        profile?.username?.charAt(0) || '?'
                       }`}
                       alt="User Profile"
                     />
                     <span className="hidden md:block font-semibold text-huddle-text-light dark:text-huddle-text-dark">
+                      {/* --- FIX --- Use optional chaining */}
                       {profile?.username}
                     </span>
                     <svg
@@ -127,7 +129,7 @@ const Header = () => {
                 </div>
               </>
             ) : (
-              // Not Authenticated: Show Sign In Button
+              // Not Authenticated: Show Sign In Button (This is correct)
               <button
                 onClick={handleSignIn}
                 className="bg-huddle-orange text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:bg-huddle-blue transition-all duration-200 flex items-center space-x-2 cursor-pointer "
@@ -161,10 +163,9 @@ const Header = () => {
         {isMobileMenuOpen && (
           <div className="md:hidden pb-4">
             <div className="px-2 pt-2 pb-3 space-y-3 sm:px-3">
-              {/* 4. Conditional Mobile Menu */}
+              {/* This logic is also correct */}
               {isAuthenticated ? (
                 <>
-                  {/* 3. Use the new component for the mobile button */}
                   <CreateHuddle isMobile />
 
                   <Link
@@ -176,11 +177,13 @@ const Header = () => {
                       <img
                         className="h-8 w-8 rounded-full object-cover"
                         src={`https://placehold.co/100x100/111827/FF7A59?text=${
-                          profile?.username?.charAt(0)
+                          
+                          profile?.username?.charAt(0) || '?'
                         }`}
                         alt="User Profile"
                       />
                       <span className="font-semibold text-huddle-text-light dark:text-huddle-text-dark">
+                        
                         {profile?.username}
                       </span>
                     </div>
@@ -199,7 +202,7 @@ const Header = () => {
                   </button>
                 </>
               ) : (
-                // Not Authenticated: Show Sign In
+                // Not Authenticated: Show Sign In (This is correct)
                 <button
                   onClick={handleSignIn}
                   className="w-full bg-huddle-orange text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:bg-huddle-blue transition-all duration-200 flex items-center justify-center space-x-2 cursor-pointer "
@@ -217,4 +220,3 @@ const Header = () => {
 };
 
 export default Header;
-

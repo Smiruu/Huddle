@@ -9,7 +9,7 @@ export const LobbyController = {
   ): Promise<void> {
     try {
    
-      const { name, description, game, skillLevel } = req.body;
+      const { name, description, game, skillLevel, maxParticipants, tags } = req.body;
 
 
       const { id: ownerId } = (req as any).user;
@@ -27,7 +27,8 @@ export const LobbyController = {
         ownerId,
         game,
         skillLevel,
-        
+        maxParticipants, 
+        tags
       );
 
    
