@@ -47,6 +47,7 @@ export const useHuddle = () => {
     }
 
     const clearHuddleError = () => setHuddleError(null);
+
     return { huddleLoading, huddleError, createHuddle, clearHuddleError };
 
 }

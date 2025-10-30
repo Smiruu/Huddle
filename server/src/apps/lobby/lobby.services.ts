@@ -1,6 +1,7 @@
 import supabase from "../../supabase/supabase";
 
 interface Lobby {
+id: string;
   name: string;
   description: string;
   created_at: string;
@@ -30,5 +31,18 @@ export const LobbyService = {
             }
 
             return data as Lobby
+    },
+
+    async getLobbies(): Promise<Lobby[]> {
+    const {data, error} = await supabase
+      .from("lobbies")
+      .select("*");
+
+    if(error) {
+        console.error('lobby.services: Supabase get lobbies error:', error.message);
+        throw error;
     }
+
+    return data || []; 
+  }
 }
