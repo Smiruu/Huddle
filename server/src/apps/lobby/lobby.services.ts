@@ -55,9 +55,7 @@ export const LobbyService = {
   },
 
   async getLobbies(): Promise<LobbyDisplay[]> {
-    const { data, error } = await supabase
-      .from("lobbies")
-      .select("*, profiles (username), lobbies_participants (is_active)");
+    const { data, error } = await supabase.rpc('get_lobbies_with_counts');
 
     if (error) {
       console.error(
@@ -67,18 +65,6 @@ export const LobbyService = {
       throw error;
     }
 
-    const lobbies = data.map(lobby => {
-      const activeCount = lobby.lobbies_participants.filter(
-        (p: { is_active: boolean }) => p.is_active
-      ).length;
-
-      return{
-        ...lobby,
-        participant_count: activeCount,
-        owner_username: lobby.profiles?. username ||  null,
-      }
-    })
-
-    return lobbies as LobbyDisplay[];
+    return (data as any) || [];
   },
 };

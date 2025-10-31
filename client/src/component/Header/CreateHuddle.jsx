@@ -1,62 +1,27 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Plus, X } from 'lucide-react';
 import ReactDOM from 'react-dom'
-import { useHuddle } from '../../hooks/useHuddle'; 
+// 1. Import the new hook
+import { useCreateHuddleForm } from '../../hooks/useCreateHuddleForm'; 
 
 const CreateHuddle = ({ isMobile = false }) => {
-  // --- Local UI State ---
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [huddleName, setHuddleName] = useState('');
-  const [description, setDescription] = useState('');
-  const [game, setGame] = useState('Valorant'); 
-  const [skillLevel, setSkillLevel] = useState('Any');
-  const [maxParticipants, setMaxParticipants] = useState(10); // <-- ADDED: Default to 10
-  const [tagsInput, setTagsInput] = useState('');             // <-- ADDED: State for the tag input string
+  
 
-  // --- Hook ---
-  const { huddleLoading, huddleError, createHuddle, clearHuddleError } = useHuddle();
+  const {
+    isModalOpen,
+    huddleName, setHuddleName,
+    description, setDescription,
+    game, setGame,
+    skillLevel, setSkillLevel,
+    maxParticipants, setMaxParticipants,
+    tagsInput, setTagsInput,
+    huddleLoading,
+    huddleError,
+    openModal,
+    closeModal,
+    handleSubmit
+  } = useCreateHuddleForm();
 
-  // --- UI Functions ---
-  const openModal = () => {
-    setHuddleName(''); 
-    setDescription('');
-    setGame('Valorant');
-    setSkillLevel('Any');
-    setMaxParticipants(10);    // <-- ADDED: Reset on open
-    setTagsInput('');          // <-- ADDED: Reset on open
-    clearHuddleError();
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!huddleName) return;
-
-    // Process the tags string into an array
-    const tags = tagsInput
-      .split(',')                     // Split by comma
-      .map(tag => tag.trim())         // Trim whitespace
-      .filter(tag => tag.length > 0); // Remove any empty strings
-
-    // Call the hook's create function with all fields
-    await createHuddle(
-      { 
-        name: huddleName, 
-        description, 
-        game, 
-        skillLevel,
-        maxParticipants, // <-- ADDED
-        tags             // <-- ADDED
-      },
-      () => {
-        closeModal();
-      }
-    );
-  };
   
   // --- Styles (no changes) ---
   const buttonClass = isMobile
@@ -95,8 +60,9 @@ const CreateHuddle = ({ isMobile = false }) => {
               </button>
             </div>
 
+            {/* 3. The form is now just wired up to the hook's props */}
             <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-              {/* --- Huddle Name (no change) --- */}
+              {/* --- Huddle Name --- */}
               <div>
                 <label htmlFor="huddleName" className={labelStyles}>
                   Huddle Name
@@ -112,7 +78,7 @@ const CreateHuddle = ({ isMobile = false }) => {
                 />
               </div>
 
-              {/* --- Description (no change) --- */}
+              {/* --- Description --- */}
               <div>
                 <label htmlFor="description" className={labelStyles}>
                   Description (Optional)
@@ -127,7 +93,7 @@ const CreateHuddle = ({ isMobile = false }) => {
                 />
               </div>
 
-              {/* --- Game & Skill Grid (no change) --- */}
+              {/* --- Game & Skill Grid --- */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label htmlFor="game" className={labelStyles}>
@@ -164,7 +130,7 @@ const CreateHuddle = ({ isMobile = false }) => {
                 </div>
               </div>
 
-              {/* --- NEW GRID for Max Participants & Tags --- */}
+              {/* --- Max Participants & Tags Grid --- */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label htmlFor="maxParticipants" className={labelStyles}>
@@ -174,11 +140,10 @@ const CreateHuddle = ({ isMobile = false }) => {
                     type="number"
                     id="maxParticipants"
                     value={maxParticipants}
-                    // Cast to number
                     onChange={(e) => setMaxParticipants(Number(e.target.value))}
                     className={inputStyles}
                     min="2"
-                    max="100" // Set a reasonable max
+                    max="100" 
                   />
                 </div>
 
@@ -197,7 +162,7 @@ const CreateHuddle = ({ isMobile = false }) => {
                 </div>
               </div>
 
-              {/* --- Error & Submit Button (no change) --- */}
+              {/* --- Error & Submit Button --- */}
               {huddleError && (
                 <p className="text-sm text-red-600 dark:text-red-500">
                   {huddleError}
@@ -226,3 +191,4 @@ const CreateHuddle = ({ isMobile = false }) => {
 };
 
 export default CreateHuddle;
+

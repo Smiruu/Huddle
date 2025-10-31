@@ -1,33 +1,14 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { socket } from '../socket/socket.js';
+
 
 const Card = ({ id,game, title, author, skillLevel, max, count, tags }) => {
     const authorInitial = author.charAt(0).toUpperCase();
-    const navigate = useNavigate()
-
-
-    //Listen if its okay to join
-    useEffect(()=> {
-        const onJoinedSuccess = (data) => {
-            if(data.lobbyId === id){
-                console.log('Server confirmed join for lobby:', data.lobbyId)
-                navigate(`/lobby/${data.lobbyId}`)
-            }
-        };
-        socket.on('joined_lobby_success', onJoinedSuccess);
-
-        return () => {
-            socket.off('joined_lobby_success', onJoinedSuccess)
-        }
-
-    },[id, navigate])
-
+    const navigate = useNavigate();
     const handleJoin = (e)=>{
         e.stopPropagation();
 
-        console.log(`Telling server we want to join lobby: ${id}`);
-        socket.emit('join_lobby', { lobbyId: id });
+navigate(`/lobby/${id}`);
     }
     return (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl border border-gray-200 dark:border-gray-700 text-huddle-text-light dark:text-huddle-text-dark flex flex-col h-full transition-all duration-300 hover:-translate-y-2 cursor-pointer">
