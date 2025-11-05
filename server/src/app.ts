@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import errorHandler from './middleware/errorHandler';
 import morgan from 'morgan';
 
+
 import authRoutes from './apps/authentication/auth.routes';
 import lobbyRoutes from './apps/lobby/lobby.routes'
 

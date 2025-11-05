@@ -98,7 +98,7 @@ export const LobbyService = {
     }
 
     if (existingParticipant) {
-      //handle rejoining
+      
       if (!existingParticipant.is_active) {
         const { error: updateError } = await supabase
           .from("lobbies_participants")
