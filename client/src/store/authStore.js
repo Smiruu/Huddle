@@ -97,7 +97,19 @@ export const useAuthStore = create((set) => ({
     set({
       user: null,
       token: null,
+      profile: null,
       isAuthenticated: false,
     });
   },
+
+
+  setProfile: (newProfileData) => {
+    set((state) => ({
+      profile: {
+        ...state.profile,
+        ...newProfileData,
+      },
+    }))
+    
+  }
 }));

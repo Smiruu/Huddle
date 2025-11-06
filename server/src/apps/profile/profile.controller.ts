@@ -14,6 +14,8 @@ export const ProfileController = {
       if(!username) {
         return next(new Error("Missing Username, please input fields"))
       }
+
+      console.log(userId)
       const newUsername = await ProfileServices.editUsername(username, userId);
 
       res.status(200).json({

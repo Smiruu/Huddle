@@ -11,6 +11,7 @@ import Register from "./screen/Register";
 
 import { connectSocket, socket } from "./socket/socket";
 import Lobby from "./screen/Lobby";
+import Profile from "./screen/Profile";
 
 const App = () => {
 
@@ -57,6 +58,7 @@ const App = () => {
             <Route element = {<ProtectedRoute/>}>
              <Route path="/" element={<Dashboard />} />
              <Route path="/lobby/:id" element={<Lobby />} />
+             <Route path="/profile" element={<Profile />} />
             </Route>
 
             

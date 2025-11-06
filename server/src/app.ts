@@ -8,6 +8,7 @@ import morgan from 'morgan';
 
 import authRoutes from './apps/authentication/auth.routes';
 import lobbyRoutes from './apps/lobby/lobby.routes'
+import profileRoutes from './apps/profile/profile.routes'
 
 //allow environment variables
 dotenv.config();
@@ -28,6 +29,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 app.use("/api/auth", authRoutes);
 app.use("/api/lobby", lobbyRoutes);
+app.use("/api/profile", profileRoutes)
 
 // Error Handling Middleware
 app.use(errorHandler);

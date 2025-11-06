@@ -22,7 +22,7 @@ profiles: {username: string} | null;
 
 interface JoinLobby {
 participant: any[]; 
-newParticipant: {userId: string, profiles:{username:string}},
+newParticipant: any,
 count: number;
 }
 
@@ -82,65 +82,56 @@ export const LobbyService = {
   async joinLobby(
     userId: string,
     lobbyId: string,
-    username: string 
-  ): Promise<JoinLobby> { // Correct return type
-
-    // 1. Handle the join/rejoin logic
-    const { data: existingParticipant, error: checkError } = await supabase
+    // Note: The 'username' parameter is removed,
+    // as we will fetch the full, fresh profile from the database.
+  ): Promise<JoinLobby> {
+    const {error: JoiningError} = await await supabase
       .from("lobbies_participants")
-      .select("id, is_active")
-      .eq("user_id", userId) 
-      .eq("lobby_id", lobbyId) 
+      .upsert({
+        user_id: userId,
+        lobby_id: lobbyId,
+        is_active: true,   // This will update on re-join
+        left_at: null     // This will update on re-join
+      },{
+        onConflict: 'user_id, lobby_id', // The constraint you just added
+        ignoreDuplicates: false // This forces the UPDATE on re-join
+      })
+
+      if(JoiningError) {
+        console.error("Lobby upsert error:", JoiningError);
+        throw JoiningError}
+
+      const { data: newParticipantProfile, error: profileError } = await supabase
+      .from("profiles")
+      .select(`*`) // Get all profile info
+      .eq("id", userId) // Use 'user_id' as fixed before
       .single();
 
-    if (checkError && checkError.code !== "PGRST116") {
-      throw checkError;
+    if (profileError) {
+      console.error("Could not fetch new participant profile:", profileError);
+      throw profileError;
     }
+    
+    const newParticipant = {
+      user_id: userId,
+      profiles: newParticipantProfile
+    };
 
-    if (existingParticipant) {
-      
-      if (!existingParticipant.is_active) {
-        const { error: updateError } = await supabase
-          .from("lobbies_participants")
-          .update({ is_active: true, left_at: null })
-          .eq("id", existingParticipant.id);
-        if (updateError) throw updateError;
-      }
-    } else {
-      
-      const { error: insertError } = await supabase
-        .from("lobbies_participants")
-        .insert({
-          user_id: userId, 
-          lobby_id: lobbyId,
-          is_active: true,
-        });
-      
-      if (insertError && insertError.code !== '23505') {
-        throw insertError;
-      }
-    }
-
-    const { data: participantsList, error: listError } = await supabase
+    // 3. Get the full list of all active participants for the new joiner
+    const { data: participantsList, count, error: listError } = await supabase
       .from("lobbies_participants")
-      .select(`user_id, profiles ( username )`)
+      // Get all profile columns AND the count
+      .select(`user_id, profiles ( * )`, { count: 'exact' }) 
       .eq("lobby_id", lobbyId)
       .eq("is_active", true);
 
-    if (listError) throw listError;
-
-    const { count, error: countError } = await supabase
-      .from('lobbies_participants')
-      .select('*', { count: 'exact', head: true })
-      .eq('lobby_id', lobbyId)
-      .eq('is_active', true);
-    
-    if (countError) throw countError;
-
-
+    if (listError) {
+       console.error("Get participant list error:", listError);
+       throw listError;
+    }
     return {
-      participant: participantsList || [],
-      newParticipant: { userId, profiles: { username } },
+      participant: participantsList || [], 
+      newParticipant: newParticipant,     
       count: count ?? 0
     };
   },

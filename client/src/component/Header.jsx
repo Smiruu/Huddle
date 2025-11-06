@@ -4,19 +4,16 @@ import { useThemeStore } from "../store/themeStore";
 import { useAuthStore } from "../store/authStore";
 import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
 import CreateHuddle from "./Header/CreateHuddle";
+import { useProfile } from "../hooks/useProfile";
 
 const Header = () => {
   const { theme, toggleTheme } = useThemeStore();
   const navigate = useNavigate(); // Hook for navigation
 
-  const { profile, isAuthenticated } = useAuthStore();
+  const { isAuthenticated, logoutUser } = useAuthStore();
 
-  // --- FIX ---
-  // Use optional chaining. This logs 'undefined' if profile is null,
-  // which is safe and won't crash the component.
-  console.log(profile?.username);
-
-  const logoutUser = useAuthStore((state) => state.logoutUser);
+  const { profile, displayPictureUrl } = useProfile();
+  
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
@@ -82,10 +79,7 @@ const Header = () => {
                   >
                     <img
                       className="h-8 w-8 rounded-full object-cover"
-                      src={`https://placehold.co/100x100/111827/FF7A59?text=${
-                        // --- FIX --- Use optional chaining
-                        profile?.username?.charAt(0) || '?'
-                      }`}
+                      src={displayPictureUrl}
                       alt="User Profile"
                     />
                     <span className="hidden md:block font-semibold text-huddle-text-light dark:text-huddle-text-dark">
@@ -176,10 +170,7 @@ const Header = () => {
                     <div className="flex items-center space-x-2">
                       <img
                         className="h-8 w-8 rounded-full object-cover"
-                        src={`https://placehold.co/100x100/111827/FF7A59?text=${
-                          
-                          profile?.username?.charAt(0) || '?'
-                        }`}
+                        src={displayPictureUrl}
                         alt="User Profile"
                       />
                       <span className="font-semibold text-huddle-text-light dark:text-huddle-text-dark">

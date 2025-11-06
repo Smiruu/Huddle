@@ -1,22 +1,21 @@
-// src/screen/Lobby.jsx
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { socket } from '../socket/socket.js'; // Make sure this path is correct
 
 const Lobby = () => {
-  const { id: lobbyId } = useParams(); // Gets 'id' from /lobby/:id
+  const { id: lobbyId } = useParams();
   const navigate = useNavigate();
   const [participants, setParticipants] = useState([]);
 
   const participantCount = participants.length;
+  console.log(participants)
+  // 1. Define the placeholder logic
+  const placeholderBase = "https://placehold.co/100x100/111827/FF7A59?text=";
 
   useEffect(() => {
-
     socket.emit('join_lobby', { lobbyId: lobbyId });
 
     const onJoinedSuccess = ({ lobbyId: joinedLobbyId, participants }) => {
-
       if (joinedLobbyId == lobbyId) {
         console.log('Successfully joined lobby, participants:', participants);
         setParticipants(participants);
@@ -26,6 +25,7 @@ const Lobby = () => {
     const onUserJoined = (newUser) => {
       console.log('A new user joined:', newUser);
       setParticipants((current) => {
+        // Prevent duplicates if socket events arrive out of order
         if (current.find(p => p.user_id === newUser.user_id)) {
           return current;
         }
@@ -54,29 +54,58 @@ const Lobby = () => {
     };
   }, [lobbyId]); // Only run this effect if the lobbyId from the URL changes
 
-  // This function is now just for the button
   const handleLeaveClick = () => {
-    // We don't need to emit here, the 'return' in useEffect
-    // will handle it when the component unmounts.
-    navigate('/'); // Just navigate
+    navigate('/');
   };
 
   return (
-    <div>
-      <h1>Lobby {lobbyId}</h1>
-      <h3>Participants: ({participantCount})</h3>
-      <ul>
-        {participants.map((p) => (
-          <li key={p.user_id}>{p.profiles.username}</li>
-        ))}
-      </ul>
+    <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900">
+      <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-xl dark:bg-gray-800">
+        <h1 className="mb-2 text-center text-3xl font-bold text-gray-900 dark:text-gray-100">
+          Lobby {lobbyId}
+        </h1>
+        <h3 className="mb-6 text-center text-lg text-gray-600 dark:text-gray-400">
+          Participants: ({participantCount})
+        </h3>
+        
+        {/* Participants List */}
+        <ul className="mb-8 h-48 max-h-60 space-y-3 overflow-y-auto px-1 py-1">
+          {participants.map((p) => {
+            // 3. Apply the same logic as useProfile here
+            let displayUrl;
+            if (p.profiles.avatar_url) {
+              displayUrl = p.profiles.avatar_url;
+            } else {
+              const initial = p.profiles.username?.charAt(0)?.toUpperCase() || '?';
+              displayUrl = `${placeholderBase}${initial}`;
+            }
 
-      <button
-        onClick={handleLeaveClick}
-        className="bg-red-500 text-white font-bold py-2 px-6 rounded-lg"
-      >
-        Leave Lobby
-      </button>
+            return (
+              // 4. Render the list item with the image
+              <li 
+                key={p.user_id} 
+                className="flex items-center space-x-3 rounded-lg bg-gray-100 p-3 dark:bg-gray-700"
+              >
+                <img
+                  src={displayUrl}
+                  alt={p.profiles.username}
+                  className="h-10 w-10 rounded-full object-cover"
+                />
+                <span className="font-medium text-gray-800 dark:text-gray-200">
+                  {p.profiles.username}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+
+        <button
+          onClick={handleLeaveClick}
+          className="w-full rounded-lg bg-red-600 py-3 text-base font-bold text-white transition hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
+        >
+          Leave Lobby
+        </button>
+      </div>
     </div>
   );
 };

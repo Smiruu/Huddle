@@ -21,12 +21,12 @@ class LobbySocketHandler{
     if (!lobbyId || !this.socket.userId || !this.socket.username) {
       return this.socket.emit("lobby_join_error", { message: "Missing data" });
     }
-
+    console.log("user joining", this.socket.username," at ", lobbyId)
+    
     try {
         const result = await LobbyService.joinLobby(
-            this.socket.userId, lobbyId, this.socket.username
+            this.socket.userId, lobbyId
         )
-
         this.socket.join(lobbyId);
         this.joinedLobbies.add(lobbyId);
         this.socket.emit("joined_lobby_success", { lobbyId, participants: result.participant });
@@ -39,7 +39,7 @@ class LobbySocketHandler{
 
     private onLeaveLobby = async ({lobbyId}: {lobbyId:string}) => {
         if (!lobbyId || !this.socket.userId) return;
-
+      console.log("user leaving", this.socket.username," at ", lobbyId)
         try {
             const result = await LobbyService.leaveLobby(this.socket.userId, lobbyId);
 
