@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { socket } from '../socket/socket.js'; // Make sure this path is correct
+import { MessagePanel } from '../component/Lobby/Messages.jsx';
 
 const Lobby = () => {
   const { id: lobbyId } = useParams();
@@ -105,6 +106,7 @@ const Lobby = () => {
         >
           Leave Lobby
         </button>
+        <MessagePanel lobbyId = {lobbyId} />
       </div>
     </div>
   );

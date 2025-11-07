@@ -7,26 +7,20 @@ import dotenv from "dotenv";
 import { AuthenticatedSocket } from "./socket.types";
 import { authMiddleware } from "./socket.auth";
 import LobbySocketHandler from "../apps/lobby/lobby.socket"; // Adjust path if needed
+import MessagingHandler from "../apps/messaging/messaging.socket";
 
 dotenv.config();
 
-/**
- * This is our "connection router".
- * It's called for every new socket that connects.
- */
 const onConnection = (io: Server) => (socket: AuthenticatedSocket) => {
   console.log(`User connected: ${socket.username} (ID: ${socket.userId})`);
 
-  // 1. Join the general-purpose dashboard room
+
   socket.join('dashboard');
 
-  // 2. Register all lobby events for this socket
-  // This one line replaces ALL of your old event listeners
   new LobbySocketHandler(io, socket);
+  new MessagingHandler(io, socket)
 
-  // 3. (In the future) You could add more handlers here
-  // new ChatSocketHandler(io, socket);
-  // new NotificationSocketHandler(io, socket);
+  
 };
 
 
