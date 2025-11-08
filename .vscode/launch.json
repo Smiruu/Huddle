@@ -14,6 +14,7 @@
             ],
             "program": "${file}//server//src//server.ts",
             "runtimeExecutable": "npx",
+            "envFile": "${workspaceFolder}//server//.env",
             "runtimeArgs": ["tsx", "${file}"],
             "console": "integratedTerminal",
             "outFiles": [

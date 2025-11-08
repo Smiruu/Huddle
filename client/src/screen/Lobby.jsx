@@ -9,7 +9,7 @@ const Lobby = () => {
   const [participants, setParticipants] = useState([]);
 
   const participantCount = participants.length;
-  console.log(participants)
+  
   // 1. Define the placeholder logic
   const placeholderBase = "https://placehold.co/100x100/111827/FF7A59?text=";
 
@@ -106,8 +106,9 @@ const Lobby = () => {
         >
           Leave Lobby
         </button>
-        <MessagePanel lobbyId = {lobbyId} />
+        
       </div>
+      <MessagePanel lobbyId = {lobbyId} />
     </div>
   );
 };
